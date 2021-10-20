@@ -1,0 +1,7 @@
+{
+  "name": "map-project-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "map-project-ionic",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
