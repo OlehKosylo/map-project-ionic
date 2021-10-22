@@ -9,12 +9,14 @@ export default ({place, status, check }) => {
 	const [switcher, setSwitcher] = useState(false);
 
 	const click = () => {
-		check({
-			switcher: !switcher,
-			place
-		})
+		if(status) {
+			check({
+				switcher: !switcher,
+				place
+			})
 
-		setSwitcher(!switcher)
+			setSwitcher(!switcher)
+		}
 	}
 
 	return (

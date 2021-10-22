@@ -56,7 +56,7 @@ const PlacesList = () => {
     const startWay = () => {
         UserService.createPlacesUser(checkedPlaces.map(el => el.id))
 
-        const coordinates = checkedPlaces.map(el => ({ lat: el.lat, lng: el.lng }))
+        const coordinates = checkedPlaces.map(el => ({lat: Number(el.lat), lng: Number(el.lng)}))
         history.push(`/map/${JSON.stringify(coordinates)}`)
     }
 
@@ -107,9 +107,12 @@ const PlacesList = () => {
                 }
 
 
-                <IonFooter>
-                    <IonButton disable={user ? true : false } className={`custom-button`} expand="block" onClick={startWay}>Start way</IonButton>
-                </IonFooter>
+                {
+                    user && checkedPlaces.length ? <IonFooter>
+                        <IonButton className={`custom-button`} expand="block" onClick={startWay}>Start way</IonButton>
+                    </IonFooter> : ''
+                }
+
             </IonPage>
         </IonContent>
     );

@@ -77,6 +77,6 @@ export class FindShortestPath {
 
         foundNextStep();
 
-        return steps;
+        return steps || [];
     }
 }

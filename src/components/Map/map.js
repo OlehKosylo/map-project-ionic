@@ -3,8 +3,10 @@ import {GoogleMap, DirectionsRenderer} from "react-google-maps";
 import React, {useEffect, useState} from "react";
 
 import {FindShortestPath} from "../../helpers";
+import {IonBackButton, IonButtons, IonHeader, IonToolbar} from "@ionic/react";
+import {arrowBack} from "ionicons/icons";
 
-export default () => {
+export default ({coordinates}) => {
     const [route, setRoute] = useState()
     const [travelMode, setTravelMode] = useState('WALKING') // DRIVING, BICYCLING, TRANSIT
     const [userLocation, setUserLocation] = useState()
@@ -28,20 +30,17 @@ export default () => {
             }
         );
 
-        // todo selected points
-        setWaypoints([
-            {name: 'B', lat: 49.8210729, lng: 24.041532},
-            {name: 'C', lat: 49.8245162, lng: 24.0415286},
-        ]);
+        console.log(coordinates)
+        setWaypoints(coordinates || []);
 
-        // todo selected last point ( does not matter )
-        setDestination({name: 'destination', lat: 49.8306484, lng: 24.0492602})
-    }, [])
+        const dest = coordinates.pop()
+        setDestination({name: 'destination', ...dest})
+    }, [coordinates])
 
     useEffect(() => {
         const DirectionsService = new google.maps.DirectionsService();
 
-        if (userLocation && waypoints.length) {
+        if (userLocation) {
             const route = new FindShortestPath(waypoints, userLocation, destination)
 
             const steps = route.generateSteps();
@@ -68,6 +67,14 @@ export default () => {
 
     return (
         <>
+            <IonHeader>
+                <IonToolbar>
+                    <IonButtons slot="start">
+                        <IonBackButton icon={arrowBack} text="" className="custom-back"/>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
+
             {
                 route && <GoogleMap
                     defaultZoom={10}
