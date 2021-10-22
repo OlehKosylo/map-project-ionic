@@ -1,4 +1,14 @@
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {
+    IonBackButton,
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonPage,
+    IonTitle,
+    IonToolbar
+} from '@ionic/react';
 import {withGoogleMap, withScriptjs} from "react-google-maps";
 import {compose, withProps} from "recompose";
 import { GoogleMapsLoader } from 'react-instantsearch-dom-maps';
@@ -7,6 +17,8 @@ import './map.page.css';
 import {Map} from "../../components";
 import {defaultUrl} from "../../configurations";
 import {useHistory} from "react-router";
+import {arrowBack, shapesOutline} from "ionicons/icons";
+import React from "react";
 
 compose(
     withProps({
@@ -28,6 +40,11 @@ const MapPage = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>Map</IonTitle>
+                    <IonButtons slot="end">
+                        <IonButton className="custom-button" onClick={() =>  history.push("/")}>
+                            <IonIcon icon={shapesOutline}/>
+                        </IonButton>
+                    </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>

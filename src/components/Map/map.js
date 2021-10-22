@@ -3,8 +3,6 @@ import {GoogleMap, DirectionsRenderer} from "react-google-maps";
 import React, {useEffect, useState} from "react";
 
 import {FindShortestPath} from "../../helpers";
-import {IonBackButton, IonButtons, IonHeader, IonToolbar} from "@ionic/react";
-import {arrowBack} from "ionicons/icons";
 
 export default ({coordinates}) => {
     const [route, setRoute] = useState()
@@ -47,6 +45,10 @@ export default ({coordinates}) => {
             const sourceStep = steps.shift()
             const destinationStep = steps.pop()
 
+            console.log(sourceStep)
+            console.log(destinationStep)
+            console.log(steps)
+
             DirectionsService.route(
                 {
                     origin: new google.maps.LatLng(sourceStep.lat, sourceStep.lng),
@@ -67,14 +69,6 @@ export default ({coordinates}) => {
 
     return (
         <>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonBackButton icon={arrowBack} text="" className="custom-back"/>
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
-
             {
                 route && <GoogleMap
                     defaultZoom={10}
