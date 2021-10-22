@@ -1,7 +1,11 @@
 import {useEffect, useState} from "react";
 
 import {shapesOutline} from "ionicons/icons";
+import {useHistory} from "react-router";
+import {useDispatch} from "react-redux";
+
 import {
+    withIonLifeCycle,
     IonSearchbar,
     IonToolbar,
     IonButtons,
@@ -12,15 +16,14 @@ import {
     IonIcon,
     IonPage,
     IonList,
-    IonGrid, withIonLifeCycle
+    IonGrid,
 } from "@ionic/react";
 
 import {PlaceService, StorageService, UserService} from "../../services";
-import {useHistory} from "react-router";
+import {SET_COORDINATES} from "../../redux/action-types";
 import Way from "../../components/Way/Way";
 
 import styles from "./places-list.page.scss";
-
 
 const PlacesList = () => {
     const history = useHistory()
@@ -33,6 +36,7 @@ const PlacesList = () => {
     const [searchText, setSearchText] = useState('');
 
     const [checkedPlaces, setCheckedPlaces] = useState([]);
+    const dispatch = useDispatch();
 
     const search = (text) => {
         setSearchText(text);
@@ -54,10 +58,17 @@ const PlacesList = () => {
     }
 
     const startWay = () => {
-        UserService.createPlacesUser(checkedPlaces.map(el => el.id))
+        UserService.createPlacesUser(checkedPlaces.map(el => el.id)).then(() => {
+            const coordinates = checkedPlaces.map(el => ({name: el.title, lat: Number(el.lat), lng: Number(el.lng)}))
+            setCheckedPlaces([])
 
-        const coordinates = checkedPlaces.map(el => ({lat: Number(el.lat), lng: Number(el.lng)}))
-        history.push(`/map/${JSON.stringify(coordinates)}`)
+            dispatch({
+                type: SET_COORDINATES,
+                payload: coordinates
+            })
+
+            history.push(`/map`)
+        })
     }
 
     useEffect(() => {
@@ -79,16 +90,17 @@ const PlacesList = () => {
             <IonPage className={styles.page}>
                 <IonSearchbar value={searchText} onIonChange={e => search(e.detail.value.toLowerCase())}></IonSearchbar>
 
-                <IonHeader>
-                    <IonToolbar>
-                        <IonButtons slot="end">
-                            <IonButton className="custom-button" onClick={() => history.push("/")}>
-                                <IonIcon icon={shapesOutline}/>
-                            </IonButton>
-                        </IonButtons>
-                    </IonToolbar>
-                </IonHeader>
-
+                {
+                    !checkedPlaces.length && <IonHeader>
+                        <IonToolbar>
+                            <IonButtons slot="end">
+                                <IonButton className="custom-button" onClick={() => history.push("/")}>
+                                    <IonIcon icon={shapesOutline}/>
+                                </IonButton>
+                            </IonButtons>
+                        </IonToolbar>
+                    </IonHeader>
+                }
 
                 {
                     listPlaces.length && <IonGrid className="ion-no-padding">

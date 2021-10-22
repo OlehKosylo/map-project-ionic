@@ -1,46 +1,74 @@
-import { IonIcon, IonItem, IonLabel} from "@ionic/react";
-import { star } from "ionicons/icons";
+import {IonIcon, IonItem, IonLabel, withIonLifeCycle} from "@ionic/react";
+import {star} from "ionicons/icons";
 import styles from "./Way.module.scss";
-import {useState} from "react";
+import {Component} from "react";
 
-export default ({place, status, check }) => {
-	const date = new Date(place.createdAt)
+class Way extends Component {
+    state = {
+        date: new Date(this.props.place.createdAt),
+        switcher: false,
+        showDescription: false
+    }
 
-	const [switcher, setSwitcher] = useState(false);
+    setSwitcher(switcher) {
+        this.setState({...this.state, switcher})
+    }
 
-	const click = () => {
-		if(status) {
-			check({
-				switcher: !switcher,
-				place
-			})
+    setShowDescription(status) {
+        this.setState({...this.state, showDescription: status})
+    }
 
-			setSwitcher(!switcher)
-		}
-	}
 
-	return (
-		<div style={{ background: switcher ? 'orange' : 'black'}} className={ styles.way } onClick={click}>
-			<IonItem lines="none">
-				<IonLabel className="ion-text-wrap">
-					<div className={ styles.wayInfo }>
-						<p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}, {place.title}</p>
-					</div>
+    click = () => {
+        const {switcher} = this.state;
+        const {status, check, place} = this.props;
 
-					{
-						status && <p className={ styles.wayText }>{ place.description }</p>
-					}
+        if (status) {
+            check({
+                switcher: !switcher,
+                place
+            })
 
-					<div className={ styles.wayReactions }>
-						<p className={ styles.wayText }>{ place.tag }</p>
-						<div className={ styles.wayReaction }></div>
-						<div className={ styles.wayReaction }>
-							<IonIcon icon={ star } />
-							<p>{ place.rating }</p>
-						</div>
-					</div>
-				</IonLabel>
-			</IonItem>
-		</div>
-	);
+            this.setSwitcher(!switcher)
+        }
+    }
+
+    ionViewWillEnter() {
+        this.setSwitcher(false)
+    }
+
+    render() {
+        const {switcher, date, showDescription} = this.state;
+        const {place, status, deletePlace, showFull} = this.props;
+
+        return (
+            <div style={{background: switcher ? 'orange' : 'black'}} className={styles.way} onClick={
+                deletePlace ? () => deletePlace(place.id) : this.click
+            }>
+                <IonItem lines="none"
+                         onClick={() => showFull && this.setShowDescription(!showDescription) }>
+                    <IonLabel className="ion-text-wrap">
+                        <div className={styles.wayInfo}>
+                            <p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}, {place.title}</p>
+                        </div>
+
+                        {
+                            (status || showDescription) && <p className={styles.wayText}>{place.description}</p>
+                        }
+
+                        <div className={styles.wayReactions}>
+                            <p className={styles.wayText}>{place.tag}</p>
+                            <div className={styles.wayReaction}></div>
+                            <div className={styles.wayReaction}>
+                                <IonIcon icon={star}/>
+                                <p>{place.rating}</p>
+                            </div>
+                        </div>
+                    </IonLabel>
+                </IonItem>
+            </div>
+        )
+    }
 }
+
+export default withIonLifeCycle(Way)

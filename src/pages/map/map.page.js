@@ -17,23 +17,12 @@ import './map.page.css';
 import {Map} from "../../components";
 import {defaultUrl} from "../../configurations";
 import {useHistory} from "react-router";
-import {arrowBack, shapesOutline} from "ionicons/icons";
+import {shapesOutline} from "ionicons/icons";
 import React from "react";
 
-compose(
-    withProps({
-        googleMapURL: defaultUrl,
-        loadingElement: <div style={{height: `100%`}}/>,
-        containerElement: <div style={{height: `100%`}}/>,
-        mapElement: <div style={{height: `100%`}}/>
-    }),
-    withScriptjs,
-    withGoogleMap,
-)(() => <Map />)
 
 const MapPage = () => {
     const history = useHistory();
-    const coordinates = JSON.parse(history.location.pathname.split('/map/')[1])
 
     return (
         <IonPage>
@@ -59,10 +48,8 @@ const MapPage = () => {
                             }),
                             withScriptjs,
                             withGoogleMap,
-                        )(() => <Map coordinates={coordinates}/>)()}
+                        )(() => <Map/>)()}
                     </GoogleMapsLoader>
-
-
                 }
             </IonContent>
         </IonPage>

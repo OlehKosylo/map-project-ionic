@@ -4,7 +4,6 @@ import {
     IonCol,
     IonContent, IonFooter,
     IonGrid,
-    IonHeader,
     IonPage,
     IonRouterLink,
     IonRow
@@ -14,11 +13,6 @@ import {Action} from "../index";
 
 const Home = () => {
     return <IonPage className={styles.homePage}>
-        <IonHeader>
-            {/* <IonToolbar className="ion-no-margin ion-no-padding"> */}
-            {/*	<IonImg src="/assets/login2.jpeg" />*/}
-            {/* </IonToolbar> */}
-        </IonHeader>
         <IonContent fullscreen>
 
             <div className={styles.getStarted}>

@@ -79,3 +79,80 @@ export const useLoginFields = () => {
         }
     ];
 }
+
+export const useCreatePlaceFields = () => {
+    return [
+        {
+            id: "title",
+            label: "Title",
+            required: true,
+            input: {
+                props: {
+                    type: "title",
+                    placeholder: "Lviv National Academic Opera"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
+            id: "description",
+            label: "Description",
+            required: true,
+            input: {
+
+                props: {
+                    type: "description",
+                    placeholder: "Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
+            id: "lat",
+            label: "Latitude",
+            required: true,
+            input: {
+                props: {
+                    type: "lat",
+                    placeholder: "49.8210729"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
+            id: "lng",
+            label: "Longitude",
+            required: true,
+            input: {
+                props: {
+                    type: "lng",
+                    placeholder: "24.041532"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
+            id: "rating",
+            label: "Rating",
+            required: true,
+            input: {
+                props: {
+                    type: "rating",
+                    placeholder: "5"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
+            id: "tag",
+            label: "Tags",
+            input: {
+                props: {
+                    type: "tag",
+                    placeholder: "center-opera-lviv-park"
+                },
+                state: useFormInput("")
+            }
+        },
+    ];
+}

@@ -1,4 +1,4 @@
-import {logOut} from "ionicons/icons";
+import {logOut, create, trashOutline} from "ionicons/icons";
 import {
     IonAvatar,
     IonButton,
@@ -25,6 +25,8 @@ import {useHistory} from "react-router";
 import {axiosInstance} from "../../helpers";
 import {Wave} from "../index";
 
+const ADMIN = 1;
+
 const Profile = ({user, places, refreshUser}) => {
     const history = useHistory();
 
@@ -40,6 +42,19 @@ const Profile = ({user, places, refreshUser}) => {
         <IonPage className={styles.page}>
             <IonHeader className="ion-no-border">
                 <IonToolbar>
+                    {
+                        user.user_role === ADMIN && <>
+                            <IonButtons slot="start">
+                                <IonButton color="light" slot="start" onClick={() => history.push('/delete-place')}>
+                                    <IonIcon icon={trashOutline}/>
+                                </IonButton>
+                                <IonButton color="light" slot="start" onClick={() => history.push('/create-place')}>
+                                    <IonIcon icon={create}/>
+                                </IonButton>
+                            </IonButtons>
+                        </>
+                    }
+
                     <IonButtons slot="end">
                         <IonButton color="light" slot="end" onClick={logout}>
                             <IonIcon icon={logOut}/>
@@ -68,9 +83,9 @@ const Profile = ({user, places, refreshUser}) => {
 
                 <IonGrid className={`${styles.figures} ion-no-padding ion-no-margin`}>
                     <IonRow>
-                        <Figure size={ places.length ? 6 : 12} count={places.length} title="Passed ways"/>
+                        <Figure size={places.length ? 6 : 12} count={places.length} title="Passed ways"/>
                         <Figure
-                            size={ places.length ? 6 : 12}
+                            size={places.length ? 6 : 12}
                             count="MAP"
                             title="Choose your way"
                             onClick={() => history.push('/place-list')}
@@ -84,7 +99,7 @@ const Profile = ({user, places, refreshUser}) => {
                             {
                                 places.map((place, index) => {
                                     return (
-                                        <Way key={`way_${index}`} place={place}/>
+                                        <Way key={`way_${index}`} place={place} showFull={true}/>
                                     );
                                 })
                             }

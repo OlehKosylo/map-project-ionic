@@ -2,7 +2,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import {Redirect, Route} from 'react-router-dom';
 import {IonApp, IonRouterOutlet,} from '@ionic/react';
 
-import {RegistrationPage, MapPage, LoginPage, HomePage, PlacesList} from './pages';
+import {RegistrationPage, MapPage, LoginPage, HomePage, PlacesList, CreatePlacePage, DeletePlacePage} from './pages';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -23,7 +23,6 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-
 const App = () => (
     <IonApp>
         <IonReactRouter>
@@ -36,7 +35,15 @@ const App = () => (
                         <RegistrationPage />
                     </Route>
 
-                    <Route exact path="/map/:data">
+                    <Route exact path="/create-place">
+                        <CreatePlacePage />
+                    </Route>
+
+                    <Route exact path="/delete-place">
+                        <DeletePlacePage />
+                    </Route>
+
+                    <Route exact path="/map">
                         <MapPage />
                     </Route>
 
