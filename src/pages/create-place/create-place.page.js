@@ -10,7 +10,6 @@ import {parseFormData, useCreatePlaceFields, validateForm} from "../../shared";
 import { PlaceService } from "../../services";
 
 const Signup = () => {
-
     const params = useParams();
     const history = useHistory();
     const fields = useCreatePlaceFields();

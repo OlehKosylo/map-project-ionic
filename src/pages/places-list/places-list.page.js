@@ -1,8 +1,5 @@
-import {useEffect, useState} from "react";
-
 import {shapesOutline} from "ionicons/icons";
-import {useHistory} from "react-router";
-import {useDispatch} from "react-redux";
+import {Component} from "react";
 
 import {
     withIonLifeCycle,
@@ -22,47 +19,54 @@ import {
 import {PlaceService, StorageService, UserService} from "../../services";
 import {SET_COORDINATES} from "../../redux/action-types";
 import Way from "../../components/Way/Way";
+import { history } from "../../App"
 
 import styles from "./places-list.page.scss";
+import {store} from "../../index";
 
-const PlacesList = () => {
-    const history = useHistory()
+class PlacesList extends Component{
+    state = {
+        user: null,
+        searchText: '',
+        listPlaces: [],
+        checkedPlaces: [],
+        defaultListPlaces: [],
 
-    const [user, setUser] = useState(null)
+    }
 
-    const [defaultListPlaces, setDefaultListPlaces] = useState([]);
+    updateState = (data) => {
+        this.setState({...this.state, ...data})
+    }
 
-    const [listPlaces, setListPlaces] = useState([]);
-    const [searchText, setSearchText] = useState('');
+    search = (text) => {
+        this.updateState({searchText: text})
 
-    const [checkedPlaces, setCheckedPlaces] = useState([]);
-    const dispatch = useDispatch();
-
-    const search = (text) => {
-        setSearchText(text);
-
-        const places = defaultListPlaces.filter(place => {
+        const places = this.state.defaultListPlaces.filter(place => {
             const lowerTag = place.tag.toLowerCase();
             const lowerTitle = place.title.toLowerCase();
 
             return lowerTag.includes(text) || lowerTitle.includes(text)
         })
 
-        setListPlaces(places.length ? places : defaultListPlaces)
+        const listPlaces = places.length ? places : this.state.defaultListPlaces
+
+        this.updateState({listPlaces})
     }
 
-    const check = ({switcher, place}) => {
+    check = ({switcher, place}) => {
         switcher
-            ? setCheckedPlaces([...checkedPlaces, place])
-            : setCheckedPlaces(checkedPlaces.filter(pl => pl.title !== place.title))
+            ? this.updateState({checkedPlaces: [...this.state.checkedPlaces, place]})
+            : this.updateState({checkedPlaces: this.state.checkedPlaces.filter(pl => pl.title !== place.title)})
     }
 
-    const startWay = () => {
+    startWay = () => {
+        const {checkedPlaces} = this.state;
+
         UserService.createPlacesUser(checkedPlaces.map(el => el.id)).then(() => {
             const coordinates = checkedPlaces.map(el => ({name: el.title, lat: Number(el.lat), lng: Number(el.lng)}))
-            setCheckedPlaces([])
+            this.updateState({checkedPlaces: []})
 
-            dispatch({
+            store.dispatch({
                 type: SET_COORDINATES,
                 payload: coordinates
             })
@@ -71,63 +75,69 @@ const PlacesList = () => {
         })
     }
 
-    useEffect(() => {
+    componentDidMount() {
         new StorageService().getItem('access_key').then(async (jwtToken) => {
             const {data} = await UserService.getUser();
-            setUser(data.user)
+            this.updateState({user: data.user})
         })
-    }, [])
+    }
 
-    useEffect(() => {
+
+    ionViewWillEnter() {
         PlaceService.getPlaces().then(res => {
-            setListPlaces(res.data)
-            setDefaultListPlaces(res.data)
+            this.updateState({listPlaces: res.data})
+            this.updateState({defaultListPlaces: res.data})
         })
-    }, []);
+    }
 
-    return (
-        <IonContent fullscreen>
-            <IonPage className={styles.page}>
-                <IonSearchbar value={searchText} onIonChange={e => search(e.detail.value.toLowerCase())}></IonSearchbar>
+    render() {
+        const {searchText, checkedPlaces, listPlaces, user} = this.state;
+        return (
+            <IonContent fullscreen>
+                <IonPage className={styles.page}>
+                    <IonSearchbar value={searchText} onIonChange={e => this.search(e.detail.value.toLowerCase())}/>
 
-                {
-                    !checkedPlaces.length && <IonHeader>
-                        <IonToolbar>
-                            <IonButtons slot="end">
-                                <IonButton className="custom-button" onClick={() => history.push("/")}>
-                                    <IonIcon icon={shapesOutline}/>
-                                </IonButton>
-                            </IonButtons>
-                        </IonToolbar>
-                    </IonHeader>
-                }
+                    {
+                        !checkedPlaces.length && <IonHeader>
+                            <IonToolbar>
+                                <IonButtons slot="end">
+                                    <IonButton className="custom-button" onClick={() => history.push("/")}>
+                                        <IonIcon icon={shapesOutline}/>
+                                    </IonButton>
+                                </IonButtons>
+                            </IonToolbar>
+                        </IonHeader>
+                    }
 
-                {
-                    listPlaces.length && <IonGrid className="ion-no-padding">
-                        <IonList>
-                            {
-                                listPlaces.map((place, index) => {
-                                    return (
-                                        <>
-                                            <Way key={`way_${index}`} place={place} status={true} check={check}/>
-                                        </>
-                                    );
-                                })
-                            }
-                        </IonList>
-                    </IonGrid>
-                }
+                    {
+                        listPlaces.length && <IonGrid className="ion-no-padding">
+                            <IonList>
+                                {
+                                    listPlaces.map((place, index) => {
+                                        return (
+                                            <>
+                                                <Way key={`way_${index}`} place={place} status={true}
+                                                     check={this.check}/>
+                                            </>
+                                        );
+                                    })
+                                }
+                            </IonList>
+                        </IonGrid>
+                    }
 
 
-                {
-                    user && checkedPlaces.length ? <IonFooter>
-                        <IonButton className={`custom-button`} expand="block" onClick={startWay}>Start way</IonButton>
-                    </IonFooter> : ''
-                }
+                    {
+                        user && checkedPlaces.length ? <IonFooter>
+                            <IonButton className={`custom-button`} expand="block" onClick={this.startWay}>Start
+                                way</IonButton>
+                        </IonFooter> : ''
+                    }
 
-            </IonPage>
-        </IonContent>
-    );
-};
+                </IonPage>
+            </IonContent>
+        );
+    }
+}
 
 export default withIonLifeCycle(PlacesList);

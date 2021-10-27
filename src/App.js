@@ -23,9 +23,12 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import { createBrowserHistory } from 'history';
+export const history = createBrowserHistory();
+
 const App = () => (
     <IonApp>
-        <IonReactRouter>
+        <IonReactRouter history={history} >
                 <IonRouterOutlet>
                     <Route path="/home">
                         <HomePage />
