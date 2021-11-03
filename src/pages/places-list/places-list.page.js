@@ -26,12 +26,12 @@ import {store} from "../../index";
 
 class PlacesList extends Component{
     state = {
+        tags: [],
         user: null,
         searchText: '',
         listPlaces: [],
         checkedPlaces: [],
-        defaultListPlaces: [],
-
+        defaultListPlaces: []
     }
 
     updateState = (data) => {
@@ -42,13 +42,15 @@ class PlacesList extends Component{
         this.updateState({searchText: text})
 
         const places = this.state.defaultListPlaces.filter(place => {
-            const lowerTag = place.tag.toLowerCase();
+            const lowerTag = place.tag.toLowerCase().split('-');
             const lowerTitle = place.title.toLowerCase();
 
-            return lowerTag.includes(text) || lowerTitle.includes(text)
+            const searchText = text.toLowerCase().split(' ').filter(el => el);
+
+            return searchText.every(v => lowerTag.includes(v)) || lowerTitle.includes(text)
         })
 
-        const listPlaces = places.length ? places : this.state.defaultListPlaces
+        const listPlaces = places.length ? places : []
 
         this.updateState({listPlaces})
     }
@@ -95,7 +97,7 @@ class PlacesList extends Component{
         return (
             <IonContent fullscreen>
                 <IonPage className={styles.page}>
-                    <IonSearchbar value={searchText} onIonChange={e => this.search(e.detail.value.toLowerCase())}/>
+                    <IonSearchbar  className='pinTop' value={searchText} onIonChange={e => this.search(e.detail.value.toLowerCase())}/>
 
                     {
                         !checkedPlaces.length && <IonHeader>
@@ -110,7 +112,7 @@ class PlacesList extends Component{
                     }
 
                     {
-                        listPlaces.length && <IonGrid className="ion-no-padding">
+                        listPlaces.length ? <IonGrid className="ion-no-padding w100 m0">
                             <IonList>
                                 {
                                     listPlaces.map((place, index) => {
@@ -123,7 +125,7 @@ class PlacesList extends Component{
                                     })
                                 }
                             </IonList>
-                        </IonGrid>
+                        </IonGrid> : <div className='h100'></div>
                     }
 
 

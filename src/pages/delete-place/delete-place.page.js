@@ -16,6 +16,7 @@ import Way from "../../components/Way/Way";
 import {shapesOutline} from "ionicons/icons";
 import styles from "../../components/Home/Home.module.scss";
 import {useHistory} from "react-router";
+import {Wave} from "../../components";
 
 
 export default () => {
