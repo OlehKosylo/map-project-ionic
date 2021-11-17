@@ -19,12 +19,12 @@ import {
 import {PlaceService, StorageService, UserService} from "../../services";
 import {SET_COORDINATES} from "../../redux/action-types";
 import Way from "../../components/Way/Way";
-import { history } from "../../App"
+import {history} from "../../App"
 
 import styles from "./places-list.page.scss";
 import {store} from "../../index";
 
-class PlacesList extends Component{
+class PlacesList extends Component {
     state = {
         tags: [],
         user: null,
@@ -95,10 +95,8 @@ class PlacesList extends Component{
     render() {
         const {searchText, checkedPlaces, listPlaces, user} = this.state;
         return (
-            <IonContent fullscreen>
-                <IonPage className={styles.page}>
-                    <IonSearchbar  className='pinTop' value={searchText} onIonChange={e => this.search(e.detail.value.toLowerCase())}/>
-
+            <IonPage className={styles.page}>
+                <IonContent fullscreen>
                     {
                         !checkedPlaces.length && <IonHeader>
                             <IonToolbar>
@@ -110,6 +108,9 @@ class PlacesList extends Component{
                             </IonToolbar>
                         </IonHeader>
                     }
+
+                    <IonSearchbar className='pinTop' value={searchText}
+                                  onIonChange={e => this.search(e.detail.value.toLowerCase())}/>
 
                     {
                         listPlaces.length ? <IonGrid className="ion-no-padding w100 m0">
@@ -135,9 +136,8 @@ class PlacesList extends Component{
                                 way</IonButton>
                         </IonFooter> : ''
                     }
-
-                </IonPage>
-            </IonContent>
+                </IonContent>
+            </IonPage>
         );
     }
 }

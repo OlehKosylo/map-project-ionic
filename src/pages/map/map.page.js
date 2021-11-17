@@ -38,7 +38,7 @@ const MapPage = () => {
             </IonHeader>
             <IonContent fullscreen>
                 {
-                    <GoogleMapsLoader apiKey="AIzaSyCfepVJvbnRPe0JcykR4d_xHRsM0udmm8Q">
+                    <GoogleMapsLoader apiKey="AIzaSyD6CRrbgObw0kL33Q4H6AZE6SKjBPOBv4Q">
                         {google =>  compose(
                             withProps({
                                 googleMapURL: defaultUrl,

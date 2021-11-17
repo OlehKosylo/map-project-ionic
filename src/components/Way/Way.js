@@ -5,8 +5,12 @@ import {Component} from "react";
 
 class Way extends Component {
     state = {
-        date: new Date(this.props.place.createdAt),
+        date: new Date(this.props.place.places_users
+            ? this.props.place.places_users.createdAt
+            : this.props.place.createdAt
+        ),
         switcher: false,
+        showImg: true,
         showDescription: false
     }
 
@@ -15,9 +19,8 @@ class Way extends Component {
     }
 
     setShowDescription(status) {
-        this.setState({...this.state, showDescription: status})
+        this.setState({...this.state, showDescription: status, showImg: !status})
     }
-
 
     click = () => {
         const {switcher} = this.state;
@@ -34,22 +37,32 @@ class Way extends Component {
     }
 
     ionViewWillEnter() {
-        this.setSwitcher(false)
+        this.setSwitcher(false);
     }
 
     render() {
-        const {switcher, date, showDescription} = this.state;
-        const {place, status, deletePlace, showFull} = this.props;
+        const {switcher, date, showDescription, showImg} = this.state;
+        const {place, status, deletePlace, showFull, makeMark, deleteMark} = this.props;
+        const {alreadyMarked, score} = place;
 
         return (
             <div style={{background: switcher ? 'orange' : 'black'}} className={styles.way} onClick={
                 deletePlace ? () => deletePlace(place.id) : this.click
             }>
                 <IonItem lines="none"
-                         onClick={() => showFull && this.setShowDescription(!showDescription) }>
+                         onClick={() => showFull && this.setShowDescription(!showDescription)}>
+
+                    {
+                        !status && showImg && <img
+                            src={place.img}
+                            height='50px'
+                            style={{marginRight: '5px'}}
+                        />
+                    }
+
                     <IonLabel className="ion-text-wrap">
                         <div className={styles.wayInfo}>
-                            <p>{date.getDay()}-{date.getMonth()}-{date.getFullYear()}, {place.title}</p>
+                            <p>{date.getDate()}-{date.getMonth() + 1}-{date.getFullYear()} {date.getHours()}:{date.getMinutes()}, {place.title}</p>
                         </div>
 
                         {
@@ -58,10 +71,34 @@ class Way extends Component {
 
                         <div className={styles.wayReactions}>
                             <p className={styles.wayText}>{place.tag}</p>
-                            <div className={styles.wayReaction}></div>
                             <div className={styles.wayReaction}>
-                                <IonIcon icon={star}/>
-                                <p>{place.rating}</p>
+
+                                {
+                                    this.props.switcherValue === 'my'
+                                    && !alreadyMarked
+                                    && <>
+                                        <IonIcon icon={star} onClick={() => makeMark({place_id: place.id, score: 1})}/>
+                                        <IonIcon icon={star} onClick={() => makeMark({place_id: place.id, score: 2})}/>
+                                        <IonIcon icon={star} onClick={() => makeMark({place_id: place.id, score: 3})}/>
+                                        <IonIcon icon={star} onClick={() => makeMark({place_id: place.id, score: 4})}/>
+                                    </>
+                                }
+
+                                <IonIcon
+                                    icon={star}
+                                    style={{color: alreadyMarked ? 'orange' : ''}}
+                                    onClick={() => this.props.switcherValue === 'my' && (alreadyMarked ? deleteMark(place.id) : makeMark({
+                                        place_id: place.id,
+                                        score: 5
+                                    }))}
+                                />
+
+                                <p style={{color: alreadyMarked ? 'orange' : ''}}>
+                                    {
+                                        score
+                                    }
+                                </p>
+
                             </div>
                         </div>
                     </IonLabel>

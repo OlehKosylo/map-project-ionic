@@ -108,6 +108,18 @@ export const useCreatePlaceFields = () => {
             }
         },
         {
+            id: "img",
+            label: "Image",
+            required: true,
+            input: {
+                props: {
+                    type: "img",
+                    placeholder: "https://src_path"
+                },
+                state: useFormInput("")
+            }
+        },
+        {
             id: "lat",
             label: "Latitude",
             required: true,
@@ -127,18 +139,6 @@ export const useCreatePlaceFields = () => {
                 props: {
                     type: "lng",
                     placeholder: "24.041532"
-                },
-                state: useFormInput("")
-            }
-        },
-        {
-            id: "rating",
-            label: "Rating",
-            required: true,
-            input: {
-                props: {
-                    type: "rating",
-                    placeholder: "5"
                 },
                 state: useFormInput("")
             }
