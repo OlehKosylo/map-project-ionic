@@ -56,6 +56,7 @@ class Way extends Component {
                         !status && showImg && <img
                             src={place.img}
                             height='50px'
+                            width='80px'
                             style={{marginRight: '5px'}}
                         />
                     }

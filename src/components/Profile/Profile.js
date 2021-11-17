@@ -102,28 +102,18 @@ const Profile = ({
                         </IonRow>
                     </IonGrid>
 
+                    <IonSegment value={switcherValue}>
+                        <IonSegmentButton value="my" onClick={() => getUserPlaces()}> My </IonSegmentButton>
+                        <IonSegmentButton value="all" onClick={() => getAllPlaces()}> All </IonSegmentButton>
+                        <IonSegmentButton onClick={() => sortPlaces( sort === 'down' ? 'up' : 'down')}> {
+                            sort === 'down'
+                                ? <span>△</span>
+                                : <span>▽</span>
+                        } </IonSegmentButton>
+                    </IonSegment>
+
                     {
                         places.length ? <div>
-                            <IonToolbar>
-                                <IonSegment value={switcherValue}>
-                                    <IonSegmentButton value="my" onClick={() => getUserPlaces()}> My </IonSegmentButton>
-                                    <IonSegmentButton value="all" onClick={() => getAllPlaces()}> All </IonSegmentButton>
-                                </IonSegment>
-
-                                <>
-                                    {
-                                        <span style={{marginRight: '10px', opacity: switcherValue === 'my' ? 100 : 0}}>
-                                            {
-                                                sort === 'down'
-                                                    ?
-                                                    <p onClick={() => sortPlaces('up')}>△</p>
-                                                    : <p onClick={() => sortPlaces('down')}>▽</p>
-                                            }
-                                        </span>
-                                    }
-                                </>
-
-                            </IonToolbar>
                             <IonGrid className="ion-no-padding">
                                 <IonList>
                                     {
