@@ -49,8 +49,7 @@ class Way extends Component {
             <div style={{background: switcher ? 'orange' : 'black'}} className={styles.way} onClick={
                 deletePlace ? () => deletePlace(place.id) : this.click
             }>
-                <IonItem lines="none"
-                         onClick={() => showFull && this.setShowDescription(!showDescription)}>
+                <IonItem lines="none">
 
                     {
                         !status && showImg && <img
@@ -62,7 +61,7 @@ class Way extends Component {
                     }
 
                     <IonLabel className="ion-text-wrap">
-                        <div className={styles.wayInfo}>
+                        <div className={styles.wayInfo}  onClick={() => showFull && this.setShowDescription(!showDescription)}>
                             <p>{date.getDate()}-{date.getMonth() + 1}-{date.getFullYear()} {date.getHours()}:{date.getMinutes()}, {place.title}</p>
                         </div>
 
