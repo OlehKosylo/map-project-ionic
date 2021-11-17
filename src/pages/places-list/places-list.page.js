@@ -23,6 +23,7 @@ import {history} from "../../App"
 
 import styles from "./places-list.page.scss";
 import {store} from "../../index";
+import {countRating} from "../../helpers";
 
 class PlacesList extends Component {
     state = {
@@ -87,8 +88,15 @@ class PlacesList extends Component {
 
     ionViewWillEnter() {
         PlaceService.getPlaces().then(res => {
-            this.updateState({listPlaces: res.data})
-            this.updateState({defaultListPlaces: res.data})
+
+            const mappedPlace = res.data.map(el => {
+                const score = countRating(el.scores.map(el => el.score));
+
+                return { ...el, score }
+            })
+
+            this.updateState({listPlaces: mappedPlace})
+            this.updateState({defaultListPlaces: mappedPlace})
         })
     }
 

@@ -96,7 +96,7 @@ class Way extends Component {
 
                                 <p style={{color: alreadyMarked ? 'orange' : ''}}>
                                     {
-                                        score
+                                        score?.toFixed(1)
                                     }
                                 </p>
 
