@@ -8,7 +8,7 @@ import {useHistory} from "react-router";
 
 export default () => {
     const history = useHistory();
-    
+
     const [route, setRoute] = useState()
     const [destination, setDestination] = useState()
     const [userLocation, setUserLocation] = useState()
@@ -16,6 +16,7 @@ export default () => {
     const [travelMode, setTravelMode] = useState('WALKING') // DRIVING, BICYCLING, TRANSIT
 
     const coordinates = useSelector(({map: {coordinates}}) => coordinates);
+    const fromHere = useSelector(({map: {fromHere}}) => fromHere);
 
     useEffect(() => {
         const dest = coordinates.pop()
@@ -25,22 +26,31 @@ export default () => {
     }, [coordinates])
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-                setUserLocation({
-                    name: 'source',
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                })
-            }
-        );
+        console.log(fromHere)
+        if (fromHere) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                    setUserLocation({
+                        name: 'source',
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    })
+                }
+            );
+        }
     }, [])
 
     useEffect(() => {
         try {
             const DirectionsService = new google.maps.DirectionsService();
 
-            if (userLocation) {
-                const route = new FindShortestPath(waypoints, userLocation, destination)
+            let firstPoint = userLocation;
+
+            if (!firstPoint) {
+                firstPoint = waypoints.shift()
+            }
+
+            if (firstPoint) {
+                const route = new FindShortestPath(waypoints, firstPoint, destination)
 
                 const steps = route.generateSteps();
                 const sourceStep = steps.shift()

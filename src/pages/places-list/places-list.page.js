@@ -14,6 +14,7 @@ import {
     IonPage,
     IonList,
     IonGrid,
+    IonToggle
 } from "@ionic/react";
 
 import {PlaceService, StorageService, UserService} from "../../services";
@@ -29,6 +30,7 @@ class PlacesList extends Component {
     state = {
         tags: [],
         user: null,
+        fromHere: false,
         searchText: '',
         listPlaces: [],
         checkedPlaces: [],
@@ -63,19 +65,23 @@ class PlacesList extends Component {
     }
 
     startWay = () => {
-        const {checkedPlaces} = this.state;
+        const {checkedPlaces, fromHere} = this.state;
 
         UserService.createPlacesUser(checkedPlaces.map(el => el.id)).then(() => {
             const coordinates = checkedPlaces.map(el => ({name: el.title, lat: Number(el.lat), lng: Number(el.lng)}))
-            this.updateState({checkedPlaces: []})
+            this.updateState({checkedPlaces: [], fromHere: false})
 
             store.dispatch({
                 type: SET_COORDINATES,
-                payload: coordinates
+                payload: {coordinates, fromHere}
             })
 
             history.push(`/map`)
         })
+    }
+
+    setChecked = (status) => {
+        this.setState({fromHere: status})
     }
 
     componentDidMount() {
@@ -92,7 +98,7 @@ class PlacesList extends Component {
             const mappedPlace = res.data.map(el => {
                 const score = countRating(el.scores.map(el => el.score));
 
-                return { ...el, score }
+                return {...el, score}
             })
 
             this.updateState({listPlaces: mappedPlace})
@@ -101,18 +107,32 @@ class PlacesList extends Component {
     }
 
     render() {
-        const {searchText, checkedPlaces, listPlaces, user} = this.state;
+        const {searchText, checkedPlaces, listPlaces, user, fromHere} = this.state;
         return (
             <IonPage className={styles.page}>
                 <IonContent fullscreen>
                     {
-                        !checkedPlaces.length && <IonHeader>
+                        <IonHeader>
                             <IonToolbar>
-                                <IonButtons slot="end">
-                                    <IonButton className="custom-button" onClick={() => history.push("/")}>
-                                        <IonIcon icon={shapesOutline}/>
-                                    </IonButton>
-                                </IonButtons>
+                                <div style={{display: 'flex'}}>
+                                    <div style={{color: 'silver', opacity: '75%'}}
+                                         className="ion-margin">From here
+                                    </div>
+
+                                    <IonToggle
+                                        style={{marginTop: '10px'}}
+                                        checked={fromHere}
+                                        onIonChange={e => this.setChecked(e.detail.checked)}
+                                    />
+                                </div>
+
+                                {
+                                    !checkedPlaces.length && <IonButtons slot="end">
+                                        <IonButton className="custom-button" onClick={() => history.push("/")}>
+                                            <IonIcon icon={shapesOutline}/>
+                                        </IonButton>
+                                    </IonButtons>
+                                }
                             </IonToolbar>
                         </IonHeader>
                     }
@@ -139,10 +159,11 @@ class PlacesList extends Component {
 
 
                     {
-                        user && checkedPlaces.length ? <IonFooter>
-                            <IonButton className={`custom-button`} expand="block" onClick={this.startWay}>Start
-                                way</IonButton>
-                        </IonFooter> : ''
+                        (user && ((fromHere && checkedPlaces.length) || (!fromHere && checkedPlaces.length > 1)))
+                            ? <IonFooter>
+                                <IonButton className={`custom-button`} expand="block" onClick={this.startWay}>Start
+                                    way</IonButton>
+                            </IonFooter> : ''
                     }
                 </IonContent>
             </IonPage>

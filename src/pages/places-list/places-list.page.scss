@@ -155,3 +155,9 @@ ion-button {
 .h100 {
   height: 100%;
 }
+
+ion-toggle {
+    --background-checked: #9f9997;
+
+    --handle-background-checked: #ea6631;
+}
