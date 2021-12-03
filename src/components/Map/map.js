@@ -26,7 +26,6 @@ export default () => {
     }, [coordinates])
 
     useEffect(() => {
-        console.log(fromHere)
         if (fromHere) {
             navigator.geolocation.getCurrentPosition((position) => {
                     setUserLocation({
@@ -40,14 +39,15 @@ export default () => {
     }, [])
 
     useEffect(() => {
+        let firstPoint = userLocation;
+
+        if (!firstPoint && !fromHere) {
+            firstPoint = waypoints.shift()
+            setUserLocation(firstPoint)
+        }
+
         try {
             const DirectionsService = new google.maps.DirectionsService();
-
-            let firstPoint = userLocation;
-
-            if (!firstPoint) {
-                firstPoint = waypoints.shift()
-            }
 
             if (firstPoint) {
                 const route = new FindShortestPath(waypoints, firstPoint, destination)

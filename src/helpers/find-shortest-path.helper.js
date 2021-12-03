@@ -48,14 +48,12 @@ export class FindShortestPath {
     }
 
     generateSteps() {
-        const coordinatesArray = Object.keys(this.coordinates);
-
-        const coordinates = coordinatesArray.length > 2 ? coordinatesArray.map((key) => ({
+        const coordinates = Object.keys(this.coordinates).map((key) => ({
             key, value: {
                 lat: this.coordinates[key].lat,
                 lng: this.coordinates[key].lng,
             }
-        })) : [];
+        }))
 
         this.constructGraph();
         const graph = {...this.graph};
